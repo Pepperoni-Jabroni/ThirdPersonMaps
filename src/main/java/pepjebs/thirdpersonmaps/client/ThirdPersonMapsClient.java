@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 public class ThirdPersonMapsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        System.out.println("Client's doing it's thang");
+        // See:
+        // https://github.com/gbl/DurabilityViewer/blob/fabric_1_16/src/main/java/de/guntram/mcmod/durabilityviewer/mixin/PotionEffectsMixin.java
     }
 }
