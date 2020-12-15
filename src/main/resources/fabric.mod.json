@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "third_person_maps",
+  "version": "1.0",
+
+  "name": "Third Person Maps",
+  "description": "Render those pesky Maps in Third Person",
+  "authors": [
+    "pepperoni_jabroni_"
+  ],
+  "contact": {
+    "homepage": "https://facebook.com/",
+    "sources": "https://facebook.com/"
+  },
+
+  "license": "GPL-3.0",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "pepjebs.thirdpersonmaps.ThirdPersonMapsMod"
+    ],
+    "client": [
+      "pepjebs.thirdpersonmaps.client.ThirdPersonMapsClient"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+}
