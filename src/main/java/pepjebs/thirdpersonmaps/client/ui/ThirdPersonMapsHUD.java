@@ -33,27 +33,31 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (shouldDraw(client)) {
             if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                ItemStack map = client.player.getMainHandStack();
-                client.getTextureManager().bindTexture(MAP_BKGND);
-                drawTexture(matrices,client.getWindow().getScaledWidth()-64,0,0,0,64,64, 64, 64);
-                MapState state = FilledMapItem.getMapState(map, client.world);
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder bufferBuilder = tessellator.getBuffer();
-                bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE);
-                bufferBuilder.vertex(0.0D, client.getWindow().getScaledHeight(), -90.0D).texture(0.0F, 1.0F).next();
-                bufferBuilder.vertex(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), -90.0D).texture(1.0F, 1.0F).next();
-                bufferBuilder.vertex(client.getWindow().getScaledWidth(), 0.0D, -90.0D).texture(1.0F, 0.0F).next();
-                bufferBuilder.vertex(0.0D, 0.0D, -90.0D).texture(0.0F, 0.0F).next();
-                tessellator.draw();
-                mapRenderer.draw(matrices, VertexConsumerProvider.immediate(tessellator.getBuffer()), state, true, 16);
+                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), client.getWindow().getScaledWidth()-64);
             }
             if (client.player.getOffHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                // TODO: Copy
+                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), 0);
             }
         }
     }
 
     private boolean shouldDraw(MinecraftClient client) {
         return client.options.getPerspective() == Perspective.THIRD_PERSON_BACK && !client.options.debugEnabled;
+    }
+
+    private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, int x) {
+        // Draw map background
+        matrices.push();
+        client.getTextureManager().bindTexture(MAP_BKGND);
+        matrices.pop();
+        drawTexture(matrices,x,0,0,0,64,64, 64, 64);
+        // Draw map data
+        MapState state = FilledMapItem.getMapState(map, client.world);
+        VertexConsumerProvider vertices = client.getBufferBuilders().getEntityVertexConsumers();
+        matrices.push();
+        matrices.scale(0,0,0);
+        mapRenderer.draw(matrices, vertices, state, false, 13);
+        matrices.pop();
+        drawTexture(matrices,x + 4,4,0,0,56,56, 64, 64);
     }
 }
