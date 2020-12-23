@@ -9,6 +9,7 @@ import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.options.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,6 +22,7 @@ import java.util.stream.StreamSupport;
 public class ThirdPersonMapsHUD extends DrawableHelper {
 
     private static final Identifier MAP_BKGND = new Identifier("minecraft:textures/map/map_background.png");
+    private static final Identifier MAP_CHKRBRD = new Identifier("minecraft:textures/map/map_background_checkerboard.png");
     private static final Identifier MAP_ICONS = new Identifier("minecraft:textures/map/map_icons.png");
     private static MinecraftClient client;
     private static MapRenderer mapRenderer;
@@ -56,16 +58,18 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
 
         // Draw map data
         MapState state = FilledMapItem.getMapState(map, client.world);
-        VertexConsumerProvider vertices = client.getBufferBuilders().getEntityVertexConsumers();
-        x = client.getWindow().getScaledWidth()-60;
+        x = client.getWindow().getWidth()-60;
         if (isLeft) {
-            x = 0;
+            x = 4;
         }
 
+        Tessellator t = Tessellator.getInstance();
+        VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(t.getBuffer());
         matrices.push();
         matrices.scale(0.45f, 0.45f, 0);
-        matrices.translate(x + 8.0,8.0,0.0);
-        mapRenderer.draw(matrices, vertices, state, false, Integer.MAX_VALUE);
+        matrices.translate(x,8.0,0.0);
+        mapRenderer.draw(matrices, vcp, state, false, (int)Math.pow(2.0, 32.0));
+        vcp.draw();
         matrices.pop();
     }
 }
