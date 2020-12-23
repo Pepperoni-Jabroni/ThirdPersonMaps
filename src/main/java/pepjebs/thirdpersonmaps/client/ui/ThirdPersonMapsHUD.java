@@ -33,10 +33,10 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (shouldDraw(client)) {
             if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), client.getWindow().getScaledWidth()-64);
+                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), false);
             }
             if (client.player.getOffHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), 0);
+                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), true);
             }
         }
     }
@@ -45,19 +45,27 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         return client.options.getPerspective() == Perspective.THIRD_PERSON_BACK && !client.options.debugEnabled;
     }
 
-    private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, int x) {
+    private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
         // Draw map background
-        matrices.push();
+        int x = client.getWindow().getScaledWidth()-64;
+        if (isLeft) {
+            x = 0;
+        }
         client.getTextureManager().bindTexture(MAP_BKGND);
-        matrices.pop();
         drawTexture(matrices,x,0,0,0,64,64, 64, 64);
+
         // Draw map data
         MapState state = FilledMapItem.getMapState(map, client.world);
         VertexConsumerProvider vertices = client.getBufferBuilders().getEntityVertexConsumers();
+        x = client.getWindow().getScaledWidth()-60;
+        if (isLeft) {
+            x = 0;
+        }
+
         matrices.push();
-        matrices.scale(0,0,0);
-        mapRenderer.draw(matrices, vertices, state, false, 13);
+        matrices.scale(0.45f, 0.45f, 0);
+        matrices.translate(x + 8.0,8.0,0.0);
+        mapRenderer.draw(matrices, vertices, state, false, Integer.MAX_VALUE);
         matrices.pop();
-        drawTexture(matrices,x + 4,4,0,0,56,56, 64, 64);
     }
 }
