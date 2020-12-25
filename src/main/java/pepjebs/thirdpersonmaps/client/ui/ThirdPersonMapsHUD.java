@@ -1,6 +1,5 @@
 package pepjebs.thirdpersonmaps.client.ui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -9,21 +8,17 @@ import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.options.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 
-import java.util.stream.StreamSupport;
-
 @Environment(EnvType.CLIENT)
 public class ThirdPersonMapsHUD extends DrawableHelper {
 
     private static final Identifier MAP_BKGND = new Identifier("minecraft:textures/map/map_background.png");
     private static final Identifier MAP_CHKRBRD = new Identifier("minecraft:textures/map/map_background_checkerboard.png");
-    private static final Identifier MAP_ICONS = new Identifier("minecraft:textures/map/map_icons.png");
     private static MinecraftClient client;
     private static MapRenderer mapRenderer;
 
@@ -48,27 +43,26 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
     }
 
     private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
+        if (client.world == null) return;
         // Draw map background
+        MapState state = FilledMapItem.getMapState(map, client.world);
         int x = client.getWindow().getScaledWidth()-64;
         if (isLeft) {
             x = 0;
         }
-        client.getTextureManager().bindTexture(MAP_BKGND);
+        client.getTextureManager().bindTexture(MAP_CHKRBRD);
         drawTexture(matrices,x,0,0,0,64,64, 64, 64);
 
         // Draw map data
-        MapState state = FilledMapItem.getMapState(map, client.world);
-        x = client.getWindow().getWidth()-60;
+        x = client.getWindow().getFramebufferWidth()-(64+2);
         if (isLeft) {
-            x = 4;
+            x = 8;
         }
-
-        Tessellator t = Tessellator.getInstance();
-        VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(t.getBuffer());
+        VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
         matrices.scale(0.45f, 0.45f, 0);
         matrices.translate(x,8.0,0.0);
-        mapRenderer.draw(matrices, vcp, state, false, 240);
+        mapRenderer.draw(matrices, vcp, state, false, Integer.parseInt("0000000011110000", 2));
         vcp.draw();
         matrices.pop();
     }
