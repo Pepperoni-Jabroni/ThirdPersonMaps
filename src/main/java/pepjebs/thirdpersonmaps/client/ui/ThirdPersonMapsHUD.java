@@ -68,7 +68,7 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         matrices.push();
         matrices.scale(0.45f, 0.45f, 0);
         matrices.translate(x,8.0,0.0);
-        mapRenderer.draw(matrices, vcp, state, false, (int)Math.pow(2.0, 32.0));
+        mapRenderer.draw(matrices, vcp, state, false, 240);
         vcp.draw();
         matrices.pop();
     }
