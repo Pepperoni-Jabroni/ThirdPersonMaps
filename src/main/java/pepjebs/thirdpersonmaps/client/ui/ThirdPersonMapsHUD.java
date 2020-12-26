@@ -8,11 +8,14 @@ import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.options.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
+
+import java.util.Collection;
 
 @Environment(EnvType.CLIENT)
 public class ThirdPersonMapsHUD extends DrawableHelper {
@@ -45,22 +48,30 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
     private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
         if (client.world == null) return;
         // Draw map background
+        int y = 0;
+        if (!isLeft) {
+            // Handle potion effects on right-hand side of screen
+            if (!client.player.getStatusEffects().isEmpty()) {
+                y = 26;
+            }
+        }
         MapState state = FilledMapItem.getMapState(map, client.world);
         int x = client.getWindow().getScaledWidth()-64;
         if (isLeft) {
             x = 0;
         }
         client.getTextureManager().bindTexture(MAP_CHKRBRD);
-        drawTexture(matrices,x,0,0,0,64,64, 64, 64);
+        drawTexture(matrices,x,y,0,0,64,64, 64, 64);
 
         // Draw map data
         x = client.getWindow().getScaledWidth()-60;
+        y += 4;
         if (isLeft) {
             x = 4;
         }
         VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
-        matrices.translate(x,4.0,0.0);
+        matrices.translate(x, y, 0.0);
         matrices.scale(0.45f, 0.45f, 0);
         mapRenderer.draw(matrices, vcp, state, false, Integer.parseInt("0000000011110000", 2));
         vcp.draw();
