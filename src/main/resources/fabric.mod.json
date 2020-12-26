@@ -16,14 +16,7 @@
   "license": "GPL-3.0",
 
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "pepjebs.thirdpersonmaps.ThirdPersonMapsMod"
-    ],
-    "client": [
-      "pepjebs.thirdpersonmaps.client.ThirdPersonMapsClient"
-    ]
-  },
+  "entrypoints": {},
   "mixins": [
     "thirdpersonmaps.mixins.json"
   ],

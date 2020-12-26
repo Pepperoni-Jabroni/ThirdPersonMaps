@@ -17,6 +17,6 @@ public class ThirdPersonMapsMixin {
             at = @At("TAIL")
     )
     private void renderThirdPersonMap(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        mapHUD.render(matrices, 0,0,tickDelta);
+        mapHUD.render(matrices);
     }
 }

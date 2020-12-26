@@ -8,19 +8,15 @@ import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.options.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
-
 @Environment(EnvType.CLIENT)
 public class ThirdPersonMapsHUD extends DrawableHelper {
 
-    private static final Identifier MAP_BKGND = new Identifier("minecraft:textures/map/map_background.png");
     private static final Identifier MAP_CHKRBRD = new Identifier("minecraft:textures/map/map_background_checkerboard.png");
     private static MinecraftClient client;
     private static MapRenderer mapRenderer;
@@ -30,7 +26,7 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         mapRenderer = client.gameRenderer.getMapRenderer();
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(MatrixStack matrices) {
         if (shouldDraw(client)) {
             if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
                 renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), false);
