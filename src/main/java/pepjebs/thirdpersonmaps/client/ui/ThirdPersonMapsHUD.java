@@ -64,11 +64,8 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         drawTexture(matrices,x,y,0,0,64,64, 64, 64);
 
         // Draw map data
-        x = client.getWindow().getScaledWidth()-60;
+        x += 4;
         y += 4;
-        if (isLeft) {
-            x = 4;
-        }
         VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
         matrices.translate(x, y, 0.0);
