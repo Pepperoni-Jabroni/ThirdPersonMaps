@@ -4,7 +4,7 @@
 
 Render those pesky Minecraft Maps in everyone's favorite perspective: third person. #thirdpersongang
 
-All you have to do is simply hold a Map & be in third person! The Map HUD works exactly as you'd expect:
+This is a **client-side mod**. All you have to do is simply hold a Map & be in third person! The Map HUD works exactly as you'd expect:
 - Updates in real time
 - Works with non-fully explored Maps
 - Works at any scale
