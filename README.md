@@ -10,7 +10,7 @@ This is a **client-side mod**. All you have to do is simply hold a Map & be in t
 - Works at any scale
 - Works with both left & right hands
 
-You can force the Map scale in the HUD if you don't like the default size.
+You can force the Map scale in the HUD if you don't like the default size. Please see the file in your config folder.
 
 ## Standard Map First Person
 ![](https://i.imgur.com/pW9xYq6.png)
