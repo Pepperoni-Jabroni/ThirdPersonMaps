@@ -1,5 +1,6 @@
 package pepjebs.thirdpersonmaps.client.ui;
 
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
+import pepjebs.thirdpersonmaps.config.ThirdPersonMapsConfig;
 
 @Environment(EnvType.CLIENT)
 public class ThirdPersonMapsHUD extends DrawableHelper {
@@ -43,6 +45,8 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
 
     private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
         if (client.world == null) return;
+        ThirdPersonMapsConfig conf = AutoConfig.getConfigHolder(ThirdPersonMapsConfig.class).getConfig();
+
         // Draw map background
         int y = 0;
         if (!isLeft) {
@@ -52,12 +56,13 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
             }
         }
         MapState state = FilledMapItem.getMapState(map, client.world);
-        int x = client.getWindow().getScaledWidth()-64;
+        int x = client.getWindow().getScaledWidth()-conf.forceMapScaling;
         if (isLeft) {
             x = 0;
         }
         client.getTextureManager().bindTexture(MAP_CHKRBRD);
-        drawTexture(matrices,x,y,0,0,64,64, 64, 64);
+        drawTexture(matrices,x,y,0,0, conf.forceMapScaling,
+                conf.forceMapScaling, conf.forceMapScaling, conf.forceMapScaling);
 
         // Draw map data
         x += 4;
@@ -65,7 +70,8 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
         matrices.translate(x, y, 0.0);
-        matrices.scale(0.45f, 0.45f, 0);
+        // Prepare yourself for some magic numbers
+        matrices.scale((float) conf.forceMapScaling / 142, (float) conf.forceMapScaling / 142, 0);
         mapRenderer.draw(matrices, vcp, state, false, Integer.parseInt("0000000011110000", 2));
         vcp.draw();
         matrices.pop();
