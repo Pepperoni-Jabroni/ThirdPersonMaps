@@ -73,10 +73,10 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         matrices.translate(x, y, 0.0);
         // Prepare yourself for some magic numbers
         matrices.scale((float) conf.forceMapScaling / 142, (float) conf.forceMapScaling / 142, 0);
-        if (map.getTag() == null || !map.getTag().contains("map")) return;
-        MapState state = FilledMapItem.getMapState(map.getTag().getInt("map"), client.world);
+        if (map.getNbt() == null || !map.getNbt().contains("map")) return;
+        MapState state = FilledMapItem.getMapState(map.getNbt().getInt("map"), client.world);
         mapRenderer.draw(
-                matrices, vcp, map.getTag().getInt("map"), state,
+                matrices, vcp, map.getNbt().getInt("map"), state,
                 false, Integer.parseInt("0000000011110000", 2)
         );
         vcp.draw();
