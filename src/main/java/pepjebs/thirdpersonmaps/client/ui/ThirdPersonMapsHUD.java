@@ -1,12 +1,11 @@
 package pepjebs.thirdpersonmaps.client.ui;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.MapRenderer;
-import net.minecraft.client.options.Perspective;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.FilledMapItem;
@@ -19,7 +18,8 @@ import pepjebs.thirdpersonmaps.config.ThirdPersonMapsConfig;
 @Environment(EnvType.CLIENT)
 public class ThirdPersonMapsHUD extends DrawableHelper {
 
-    private static final Identifier MAP_CHKRBRD = new Identifier("minecraft:textures/map/map_background_checkerboard.png");
+    private static final Identifier MAP_CHKRBRD =
+            new Identifier("minecraft:textures/map/map_background.png");
     private static MinecraftClient client;
     private static MapRenderer mapRenderer;
 
@@ -30,6 +30,7 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
 
     public void render(MatrixStack matrices) {
         if (shouldDraw(client)) {
+            if (client.player == null) return;
             if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
                 renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), false);
             }
@@ -51,11 +52,10 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         int y = 0;
         if (!isLeft) {
             // Handle potion effects on right-hand side of screen
-            if (!client.player.getStatusEffects().isEmpty()) {
+            if (client.player == null || !client.player.getStatusEffects().isEmpty()) {
                 y = 26;
             }
         }
-        MapState state = FilledMapItem.getMapState(map, client.world);
         int x = client.getWindow().getScaledWidth()-conf.forceMapScaling;
         if (isLeft) {
             x = 0;
@@ -72,7 +72,12 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         matrices.translate(x, y, 0.0);
         // Prepare yourself for some magic numbers
         matrices.scale((float) conf.forceMapScaling / 142, (float) conf.forceMapScaling / 142, 0);
-        mapRenderer.draw(matrices, vcp, state, false, Integer.parseInt("0000000011110000", 2));
+        if (map.getTag() == null || !map.getTag().contains("map")) return;
+        MapState state = FilledMapItem.getMapState(map.getTag().getInt("map"), client.world);
+        mapRenderer.draw(
+                matrices, vcp, map.getTag().getInt("map"), state,
+                false, Integer.parseInt("0000000011110000", 2)
+        );
         vcp.draw();
         matrices.pop();
     }
