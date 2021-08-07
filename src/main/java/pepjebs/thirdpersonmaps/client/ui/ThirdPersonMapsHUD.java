@@ -1,5 +1,6 @@
 package pepjebs.thirdpersonmaps.client.ui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -60,13 +61,13 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         if (isLeft) {
             x = 0;
         }
-        client.getTextureManager().bindTexture(MAP_CHKRBRD);
+        RenderSystem.setShaderTexture(0, ThirdPersonMapsHUD.MAP_CHKRBRD);
         drawTexture(matrices,x,y,0,0, conf.forceMapScaling,
                 conf.forceMapScaling, conf.forceMapScaling, conf.forceMapScaling);
 
         // Draw map data
-        x += 4;
-        y += 4;
+        x += (int)(4.0 * (conf.forceMapScaling / 64.0));
+        y += (int)(4.0 * (conf.forceMapScaling / 64.0));
         VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
         matrices.translate(x, y, 0.0);

@@ -10,11 +10,11 @@ import pepjebs.thirdpersonmaps.client.ui.ThirdPersonMapsHUD;
 
 @Mixin(InGameHud.class)
 public class ThirdPersonMapsMixin {
-    private static ThirdPersonMapsHUD mapHUD = new ThirdPersonMapsHUD();
+    private static final ThirdPersonMapsHUD mapHUD = new ThirdPersonMapsHUD();
 
     @Inject(
             method = "render",
-            at = @At("TAIL")
+            at = @At("RETURN")
     )
     private void renderThirdPersonMap(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         mapHUD.render(matrices);

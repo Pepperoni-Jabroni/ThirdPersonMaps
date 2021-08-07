@@ -6,18 +6,20 @@
   "name": "Third Person Maps",
   "description": "Render those pesky Maps in Third Person",
   "authors": [
-    "pepperoni_jabroni_"
+    "Pepperoni__Jabroni__"
   ],
   "contact": {
-    "homepage": "https://facebook.com/",
-    "sources": "https://facebook.com/"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/third-person-maps",
+    "sources": "https://github.com/Pepperoni-Jabroni/ThirdPersonMaps",
+    "issues": "https://github.com/Pepperoni-Jabroni/ThirdPersonMaps/issues"
   },
 
   "license": "GPL-3.0",
 
   "environment": "*",
   "entrypoints": {
-    "client": ["pepjebs.thirdpersonmaps.client.ThirdPersonMapsClient"]
+    "client": ["pepjebs.thirdpersonmaps.client.ThirdPersonMapsClient"],
+    "modmenu": ["pepjebs.thirdpersonmaps.config.ThirdPersonMapsModMenuApiImpl"]
   },
   "mixins": [
     "thirdpersonmaps.mixins.json"
