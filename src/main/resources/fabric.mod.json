@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "third_person_maps",
-  "version": "1.2.0",
+  "version": "1.3.0",
 
   "name": "Third Person Maps",
   "description": "Render those pesky Maps in Third Person",
@@ -28,7 +28,7 @@
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.17.x",
-    "java": ">=16"
+    "minecraft": "1.18.x",
+    "java": ">=17"
   }
 }
