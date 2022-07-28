@@ -1,4 +1,5 @@
 {
   "text.autoconfig.third_person_maps.title": "Third Person Maps Config",
-  "text.autoconfig.third_person_maps.option.forceMapScaling": "Force Map Scaling"
+  "text.autoconfig.third_person_maps.option.forceMapScaling": "Map Scaling (% of screen height)",
+  "text.autoconfig.third_person_maps.option.forceMapScaling.@Tooltip": "Scale the mini-map to a given % of the height of your screen."
 }

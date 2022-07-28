@@ -13,6 +13,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import pepjebs.thirdpersonmaps.config.ThirdPersonMapsConfig;
 
@@ -31,53 +32,74 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
 
     public void render(MatrixStack matrices) {
         if (shouldDraw(client)) {
-            if (client.player == null) return;
+            boolean isPlayerLeftHanded = client.player.getMainArm() == Arm.LEFT;
             if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), false);
+                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), isPlayerLeftHanded);
             }
             if (client.player.getOffHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), true);
+                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), !isPlayerLeftHanded);
             }
         }
     }
 
     private boolean shouldDraw(MinecraftClient client) {
-        return client.options.getPerspective() == Perspective.THIRD_PERSON_BACK && !client.options.debugEnabled;
+        if (client.player == null) return false;
+        return client.options.getPerspective() != Perspective.FIRST_PERSON && !client.options.debugEnabled;
     }
 
     private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
-        if (client.world == null) return;
+        if (client.world == null || client.player == null) return;
+        if (map.getNbt() == null || !map.getNbt().contains("map")) return;
+        MapState state = FilledMapItem.getMapState(map.getNbt().getInt("map"), client.world);
+        if (state == null) return;
         ThirdPersonMapsConfig conf = AutoConfig.getConfigHolder(ThirdPersonMapsConfig.class).getConfig();
 
         // Draw map background
+        int mapScaling = (int) Math.floor(conf.forceMapScaling / 100.0 * client.getWindow().getScaledHeight());
+        String anchorLocation = "UpperRight";
+        if (isLeft) {
+            anchorLocation = "UpperLeft";
+        }
+        int x = anchorLocation.contains("Left") ? 0 : client.getWindow().getScaledWidth()-mapScaling;
         int y = 0;
-        if (!isLeft) {
-            // Handle potion effects on right-hand side of screen
-            if (client.player == null || !client.player.getStatusEffects().isEmpty()) {
-                y = 26;
+        if (isLeft) {
+            x += conf.mapHorizontalOffsetLeftHand;
+            y += conf.mapVerticalOffsetLeftHand;
+        } else {
+            x += conf.mapHorizontalOffsetRightHand;
+            y += conf.mapVerticalOffsetRightHand;
+        }
+        if (anchorLocation.contentEquals("UpperRight")) {
+            boolean hasBeneficial =
+                    client.player.getStatusEffects().stream().anyMatch(p -> p.getEffectType().isBeneficial());
+            boolean hasNegative =
+                    client.player.getStatusEffects().stream().anyMatch(p -> !p.getEffectType().isBeneficial());
+
+            if (hasNegative && y < 52) {
+                y += (52 - y);
+            } else if (hasBeneficial && y < 26) {
+                y += (26 - y);
             }
         }
-        int x = client.getWindow().getScaledWidth()-conf.forceMapScaling;
-        if (isLeft) {
-            x = 0;
-        }
-        RenderSystem.setShaderTexture(0, ThirdPersonMapsHUD.MAP_CHKRBRD);
-        drawTexture(matrices,x,y,0,0, conf.forceMapScaling,
-                conf.forceMapScaling, conf.forceMapScaling, conf.forceMapScaling);
+        RenderSystem.setShaderTexture(0, MAP_CHKRBRD);
+        drawTexture(matrices,x,y,0,0,mapScaling,mapScaling, mapScaling, mapScaling);
 
         // Draw map data
-        x += (int)(4.0 * (conf.forceMapScaling / 64.0));
-        y += (int)(4.0 * (conf.forceMapScaling / 64.0));
-        VertexConsumerProvider.Immediate vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        x += (mapScaling / 16) - (mapScaling / 64);
+        y += (mapScaling / 16) - (mapScaling / 64);
+        VertexConsumerProvider.Immediate vcp;
+        vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.push();
         matrices.translate(x, y, 0.0);
         // Prepare yourself for some magic numbers
-        matrices.scale((float) conf.forceMapScaling / 142, (float) conf.forceMapScaling / 142, 0);
-        if (map.getNbt() == null || !map.getNbt().contains("map")) return;
-        MapState state = FilledMapItem.getMapState(map.getNbt().getInt("map"), client.world);
+        matrices.scale((float) mapScaling / 142, (float) mapScaling / 142, -1);
         mapRenderer.draw(
-                matrices, vcp, map.getNbt().getInt("map"), state,
-                false, Integer.parseInt("0000000011110000", 2)
+                matrices,
+                vcp,
+                map.getNbt().getInt("map"),
+                state,
+                false,
+                Integer.parseInt("F000F0", 16)
         );
         vcp.draw();
         matrices.pop();
