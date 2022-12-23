@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/17690401/206918778-f71443ec-e7c4-4957-8e1d-20746c8f110e.png">
+  <img src="https://user-images.githubusercontent.com/17690401/209392408-4ca02c99-e13b-466a-b790-5d1d9ed45dcb.png">
   </br></br>
   Render those pesky Minecraft Maps in everyone's favorite perspective: third person. #thirdpersongang
   </br></br>
