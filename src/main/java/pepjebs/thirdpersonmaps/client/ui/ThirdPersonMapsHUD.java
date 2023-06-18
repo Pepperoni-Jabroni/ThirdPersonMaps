@@ -5,7 +5,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 import pepjebs.thirdpersonmaps.config.ThirdPersonMapsConfig;
 
 @Environment(EnvType.CLIENT)
-public class ThirdPersonMapsHUD extends DrawableHelper {
+public class ThirdPersonMapsHUD {
 
     private static final Identifier MAP_CHKRBRD =
             new Identifier("minecraft:textures/map/map_background.png");
@@ -30,14 +30,14 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         mapRenderer = client.gameRenderer.getMapRenderer();
     }
 
-    public void render(MatrixStack matrices) {
+    public void render(DrawContext context) {
         if (shouldDraw(client)) {
             boolean isPlayerLeftHanded = client.player.getMainArm() == Arm.LEFT;
-            if (client.player.getMainHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getMainHandStack(), isPlayerLeftHanded);
+            if (client.player.getMainHandStack().isOf(Items.FILLED_MAP)) {
+                renderMapHUDFromItemStack(context, client.player.getMainHandStack(), isPlayerLeftHanded);
             }
-            if (client.player.getOffHandStack().isItemEqualIgnoreDamage(new ItemStack(Items.FILLED_MAP))) {
-                renderMapHUDFromItemStack(matrices, client.player.getOffHandStack(), !isPlayerLeftHanded);
+            if (client.player.getOffHandStack().isOf(Items.FILLED_MAP)) {
+                renderMapHUDFromItemStack(context, client.player.getOffHandStack(), !isPlayerLeftHanded);
             }
         }
     }
@@ -47,7 +47,8 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
         return client.options.getPerspective() != Perspective.FIRST_PERSON && !client.options.debugEnabled;
     }
 
-    private void renderMapHUDFromItemStack(MatrixStack matrices, ItemStack map, boolean isLeft) {
+    private void renderMapHUDFromItemStack(DrawContext context, ItemStack map, boolean isLeft) {
+        var matrices = context.getMatrices();
         if (client.world == null || client.player == null) return;
         if (map.getNbt() == null || !map.getNbt().contains("map")) return;
         MapState state = FilledMapItem.getMapState(map.getNbt().getInt("map"), client.world);
@@ -82,7 +83,7 @@ public class ThirdPersonMapsHUD extends DrawableHelper {
             }
         }
         RenderSystem.setShaderTexture(0, MAP_CHKRBRD);
-        drawTexture(matrices,x,y,0,0,mapScaling,mapScaling, mapScaling, mapScaling);
+        context.drawTexture(MAP_CHKRBRD,x,y,0,0,mapScaling,mapScaling, mapScaling, mapScaling);
 
         // Draw map data
         x += (mapScaling / 16) - (mapScaling / 64);
