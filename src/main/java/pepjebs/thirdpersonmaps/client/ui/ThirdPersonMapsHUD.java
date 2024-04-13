@@ -44,7 +44,8 @@ public class ThirdPersonMapsHUD {
 
     private boolean shouldDraw(MinecraftClient client) {
         if (client.player == null) return false;
-        return client.options.getPerspective() != Perspective.FIRST_PERSON && !client.options.debugEnabled;
+        return client.options.getPerspective() != Perspective.FIRST_PERSON
+                && !client.getDebugHud().shouldShowDebugHud();
     }
 
     private void renderMapHUDFromItemStack(DrawContext context, ItemStack map, boolean isLeft) {
