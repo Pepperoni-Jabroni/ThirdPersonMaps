@@ -1,0 +1,13 @@
+{
+  "text.autoconfig.third_person_maps.title": "Configuración de Third Person Maps",
+  "text.autoconfig.third_person_maps.option.forceMapScaling": "Escala del Mapa (% de la altura de la pantalla)",
+  "text.autoconfig.third_person_maps.option.forceMapScaling.@Tooltip": "Escala el mini-mapa a un porcentaje dado de la altura de tu pantalla.",
+  "text.autoconfig.third_person_maps.option.mapHorizontalOffsetRightHand": "Desplazamiento Horizontal del Mapa en la Mano Derecha",
+  "text.autoconfig.third_person_maps.option.mapHorizontalOffsetRightHand.@Tooltip": "Ingresa un número entero que desplazará el mapa horizontalmente en tu mano derecha.",
+  "text.autoconfig.third_person_maps.option.mapVerticalOffsetRightHand": "Desplazamiento Vertical del Mapa en la Mano Derecha",
+  "text.autoconfig.third_person_maps.option.mapVerticalOffsetRightHand.@Tooltip": "Ingresa un número entero que desplazará el mapa verticalmente en tu mano derecha.",
+  "text.autoconfig.third_person_maps.option.mapHorizontalOffsetLeftHand": "Desplazamiento Horizontal del Mapa en la Mano Izquierda",
+  "text.autoconfig.third_person_maps.option.mapHorizontalOffsetLeftHand.@Tooltip": "Ingresa un número entero que desplazará el mapa horizontalmente en tu mano izquierda.",
+  "text.autoconfig.third_person_maps.option.mapVerticalOffsetLeftHand": "Desplazamiento Vertical del Mapa en la Mano Izquierda",
+  "text.autoconfig.third_person_maps.option.mapVerticalOffsetLeftHand.@Tooltip": "Ingresa un número entero que desplazará el mapa verticalmente en tu mano izquierda."
+}
