@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,7 +21,7 @@ import pepjebs.thirdpersonmaps.config.ThirdPersonMapsConfig;
 public class ThirdPersonMapsHUD {
 
     private static final Identifier MAP_CHKRBRD =
-            new Identifier("minecraft:textures/map/map_background.png");
+            Identifier.of("third_person_maps:textures/gui/hud/map_background.png");
     private static MinecraftClient client;
     private static MapRenderer mapRenderer;
 
@@ -51,8 +51,8 @@ public class ThirdPersonMapsHUD {
     private void renderMapHUDFromItemStack(DrawContext context, ItemStack map, boolean isLeft) {
         var matrices = context.getMatrices();
         if (client.world == null || client.player == null) return;
-        if (map.getNbt() == null || !map.getNbt().contains("map")) return;
-        MapState state = FilledMapItem.getMapState(map.getNbt().getInt("map"), client.world);
+        if (map.getComponents() == null || !map.getComponents().contains(DataComponentTypes.MAP_ID)) return;
+        MapState state = FilledMapItem.getMapState(map.getComponents().get(DataComponentTypes.MAP_ID), client.world);
         if (state == null) return;
         ThirdPersonMapsConfig conf = AutoConfig.getConfigHolder(ThirdPersonMapsConfig.class).getConfig();
 
@@ -73,9 +73,9 @@ public class ThirdPersonMapsHUD {
         }
         if (anchorLocation.contentEquals("UpperRight")) {
             boolean hasBeneficial =
-                    client.player.getStatusEffects().stream().anyMatch(p -> p.getEffectType().isBeneficial());
+                    client.player.getStatusEffects().stream().anyMatch(p -> p.getEffectType().value().isBeneficial());
             boolean hasNegative =
-                    client.player.getStatusEffects().stream().anyMatch(p -> !p.getEffectType().isBeneficial());
+                    client.player.getStatusEffects().stream().anyMatch(p -> !p.getEffectType().value().isBeneficial());
 
             if (hasNegative && y < 52) {
                 y += (52 - y);
@@ -90,7 +90,7 @@ public class ThirdPersonMapsHUD {
         x += (mapScaling / 16) - (mapScaling / 64);
         y += (mapScaling / 16) - (mapScaling / 64);
         VertexConsumerProvider.Immediate vcp;
-        vcp = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        vcp = context.getVertexConsumers();
         matrices.push();
         matrices.translate(x, y, 0.0);
         // Prepare yourself for some magic numbers
@@ -98,7 +98,7 @@ public class ThirdPersonMapsHUD {
         mapRenderer.draw(
                 matrices,
                 vcp,
-                map.getNbt().getInt("map"),
+                map.getComponents().get(DataComponentTypes.MAP_ID),
                 state,
                 false,
                 Integer.parseInt("F000F0", 16)

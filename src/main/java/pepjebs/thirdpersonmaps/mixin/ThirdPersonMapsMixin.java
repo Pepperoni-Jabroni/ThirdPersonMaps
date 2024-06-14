@@ -2,7 +2,7 @@ package pepjebs.thirdpersonmaps.mixin;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +17,7 @@ public class ThirdPersonMapsMixin {
             method = "render",
             at = @At("RETURN")
     )
-    private void renderThirdPersonMap(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void renderThirdPersonMap(DrawContext context, RenderTickCounter ticks, CallbackInfo ci) {
         mapHUD.render(context);
     }
 }
